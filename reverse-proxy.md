@@ -2,7 +2,7 @@
 
 Il faut désactiver l'accès direct de l'extérieur au daemon.
 
-Editer le fichier /etc/transmission-daemon/settings.json :
+- `/etc/transmission-daemon/settings.json` :
 ```json
 {
     "rpc-whitelist": "127.0.0.1",
@@ -10,7 +10,7 @@ Editer le fichier /etc/transmission-daemon/settings.json :
 }
 ```
 
-Chargement de la nouvelle config :
+- Chargement de la nouvelle config :
 ```
 invoke-rc.d transmission-daemon reload
 ```
@@ -23,50 +23,50 @@ openssl req -x509 -newkey rsa:4096 -nodes -days 365 \
     -keyout /etc/ssl/private/transmission.key
 ```
 
-Clé privée : /etc/ssl/private/transmission.key
-Certificat : /etc/ssl/certs/transmission.crt
+- Clé privée : `/etc/ssl/private/transmission.key`
+- Certificat : `/etc/ssl/certs/transmission.crt`
 
-Protection de la clé privée :
+- Protection de la clé privée :
 ```
 chmod 440 /etc/ssl/private/transmission.key
 ```
 
 ## Configuration d'apache
 
-Il faut activer des modules apache:
+- Activer des modules apache:
 ```
 a2enmod proxy proxy_http ssl
 ```
 
-Les fichiers de configuration d'apache sont dans /etc/apache2/.
+Les fichiers de configuration d'apache sont dans `/etc/apache2/`.
 
-sites-enabled/000-default.conf
+- `sites-enabled/000-default.conf` :
 ```
 # Active http pour servir le contenu du dossier /var/www/html
 <VirtualHost *:80>
-	DocumentRoot /var/www/html
+    DocumentRoot /var/www/html
 
-	ErrorLog ${APACHE_LOG_DIR}/error.log
-	CustomLog ${APACHE_LOG_DIR}/access.log combined
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 
 # Active https
 <VirtualHost *:443>
-	DocumentRoot /var/www/html
+    DocumentRoot /var/www/html
 
-	SSLEngine on
-	SSLCertificateFile /etc/ssl/certs/transmission.crt
-	SSLCertificateKeyFile /etc/ssl/private/transmission.key
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/transmission.crt
+    SSLCertificateKeyFile /etc/ssl/private/transmission.key
 
     # Reverse proxy: *:443/transmission => localhost:9091/transmission
-	<Location /transmission>
-		ProxyPass http://localhost:9091/transmission
-		ProxyPassReverse http://localhost:9091/transmission
-	</Location>	
+    <Location /transmission>
+        ProxyPass http://localhost:9091/transmission
+        ProxyPassReverse http://localhost:9091/transmission
+    </Location>	
 </VirtualHost>
 ```
 
-Relancer apache2:
+- Relancer apache2:
 ```
 service apache2 restart
 ```
@@ -79,7 +79,7 @@ Si openvpn écoute déjà sur le port 443, il faut changer la config d'openvpn.
 ```
 port 1194
 ```
-
+- Relancer le service
 ```
 service openvpn restart
 ```
