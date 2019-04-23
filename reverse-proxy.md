@@ -1,3 +1,23 @@
+## Obtenir un certificat Let's encrypt
+
+Attention il faut que le DNS ai les bonnes adresses ipv4 et ipv6 !
+
+```
+# Ajout du repot backports
+echo 'deb http://deb.debian.org/debian stretch-backports main' >> /etc/apt/sources.list
+apt update
+
+# Installation de certbot
+apt-get install certbot python-certbot-apache -t stretch-backports
+
+# Certification
+certbot --apache certonly
+```
+
+- Clé privée : `/etc/letsencrypt/live/nicmar.fr/privkey.pem`
+- Certificat : `/etc/letsencrypt/live/nicmar.fr/fullchain.pem`
+
+
 ## Transmission daemon
 
 Il faut désactiver l'accès direct de l'extérieur au daemon.
@@ -13,22 +33,6 @@ Il faut désactiver l'accès direct de l'extérieur au daemon.
 - Chargement de la nouvelle config :
 ```
 invoke-rc.d transmission-daemon reload
-```
-
-## Génération du certificat auto-signé
-
-```
-openssl req -x509 -newkey rsa:4096 -nodes -days 365 \
-    -out /etc/ssl/certs/transmission.crt \
-    -keyout /etc/ssl/private/transmission.key
-```
-
-- Clé privée : `/etc/ssl/private/transmission.key`
-- Certificat : `/etc/ssl/certs/transmission.crt`
-
-- Protection de la clé privée :
-```
-chmod 440 /etc/ssl/private/transmission.key
 ```
 
 ## Configuration d'apache
@@ -55,8 +59,8 @@ Les fichiers de configuration d'apache sont dans `/etc/apache2/`.
     DocumentRoot /var/www/html
 
     SSLEngine on
-    SSLCertificateFile /etc/ssl/certs/transmission.crt
-    SSLCertificateKeyFile /etc/ssl/private/transmission.key
+    SSLCertificateFile /etc/letsencrypt/live/nicmar.fr/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/nicmar.fr/privkey.pem
 
     # Reverse proxy: *:443/transmission => localhost:9091/transmission
     <Location /transmission>
