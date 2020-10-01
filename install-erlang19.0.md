@@ -3,8 +3,8 @@
 openssl 1.0.2
 
 ```bash
-git clone --depth=1 -b OpenSSL_1_0_2-stable HTTPS://github.com/openssl/openssl.git
-cd OpenSSL_1_0_2-stable
+git clone --depth=1 -b OpenSSL_1_0_2-stable https://github.com/openssl/openssl.git
+cd openssl
 export CFLAGS=-fPIC
 ./config shared --prefix=~/opt/ssl-1.0.2-stable --openssldir=~/opt/ssl-1.0.2-stable
 make
